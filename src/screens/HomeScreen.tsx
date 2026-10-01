@@ -35,13 +35,17 @@ export const HomeScreen = ({ navigation }: any) => {
         data: products,
         isLoading,
         isError,
+        error,
         refetch,
         isRefetching,
     } = useQuery<Product[]>({
         queryKey: ['products'],
         queryFn: getProducts,
         staleTime: STALE_TIME_MS,
+        retry: 1,
     });
+
+    const hasError = isError || (!!error && !isRefetching);
 
     const filteredProducts = useMemo(() => {
         if (!products) return [];
@@ -91,7 +95,7 @@ export const HomeScreen = ({ navigation }: any) => {
                         <ActivityIndicator size="large" color={COLORS.primary} />
                         <Text style={styles.loadingText}>Đang tải món...</Text>
                     </View>
-                ) : isError ? (
+                ) : hasError ? (
                     <View style={styles.centerContainer}>
                         <Text style={styles.errorMssv}>{STUDENT.mssv}</Text>
                         <Text style={styles.errorText}>Không tải được dữ liệu món.</Text>
@@ -104,6 +108,7 @@ export const HomeScreen = ({ navigation }: any) => {
                         <FlashList
                             data={filteredProducts}
                             numColumns={2}
+                            {...({ estimatedItemSize: 220 } as any)}
                             keyExtractor={(item: Product) => `${STUDENT.mssv}-${item.id}`}
                             onRefresh={refetch}
                             refreshing={isRefetching}

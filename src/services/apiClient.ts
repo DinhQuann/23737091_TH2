@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig } from 'axios';
 import { STUDENT } from '../constants/student';
 
 export const apiClient = axios.create({
-    baseURL: 'https://651c36b33513a2260b45070f.mockapi.io/api/v1',
+    baseURL: 'https://fakestoreapi.com',
     timeout: 10000,
 });
 

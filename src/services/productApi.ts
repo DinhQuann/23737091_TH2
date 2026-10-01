@@ -54,13 +54,15 @@ const FALLBACK_PRODUCTS: Product[] = [
 ];
 
 export const getProducts = async (): Promise<Product[]> => {
-    try {
-        const response = await apiClient.get('/products');
-        if (Array.isArray(response.data) && response.data.length > 0) {
-            return response.data;
-        }
-    } catch (e) {
-        console.warn('API call failed, using fallback products:', e);
+    const response = await apiClient.get('/products?limit=12');
+    if (Array.isArray(response.data)) {
+        return response.data.map((item: any) => ({
+            id: String(item.id),
+            name: item.title || item.name || 'Món KTX',
+            price: Number(item.price) || 20,
+            image: item.image || '',
+            description: item.description || '',
+        }));
     }
-    return FALLBACK_PRODUCTS;
+    throw new Error('Dữ liệu không hợp lệ');
 };
